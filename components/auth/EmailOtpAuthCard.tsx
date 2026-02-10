@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseClient } from "@/lib/supabaseClient";
+import TurnstileCaptcha from "@/components/auth/TurnstileCaptcha";
 
 type AuthMode = "sign_in" | "sign_up";
 
@@ -39,11 +40,14 @@ function toChineseAuthError(message: string) {
 
 export default function EmailOtpAuthCard({ mode, nextPath }: EmailOtpAuthCardProps) {
   const router = useRouter();
+  const captchaEnabled = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
 
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [step, setStep] = useState<"request" | "verify">("request");
   const [cooldown, setCooldown] = useState(0);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaRefreshKey, setCaptchaRefreshKey] = useState(0);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [infoMsg, setInfoMsg] = useState<string | null>(null);
@@ -67,7 +71,13 @@ export default function EmailOtpAuthCard({ mode, nextPath }: EmailOtpAuthCardPro
 
     const { client, error: clientError } = getSupabaseClient();
     if (!client) {
-      setErrorMsg(clientError ?? "Supabase client is unavailable.");
+      setErrorMsg(clientError ?? "系统暂时不可用，请稍后再试。");
+      setLoading(false);
+      return;
+    }
+
+    if (captchaEnabled && !captchaToken) {
+      setErrorMsg("请先完成人机验证。");
       setLoading(false);
       return;
     }
@@ -76,6 +86,7 @@ export default function EmailOtpAuthCard({ mode, nextPath }: EmailOtpAuthCardPro
       email: email.trim(),
       options: {
         shouldCreateUser: mode === "sign_up",
+        captchaToken: captchaToken ?? undefined,
       },
     });
 
@@ -87,6 +98,8 @@ export default function EmailOtpAuthCard({ mode, nextPath }: EmailOtpAuthCardPro
 
     setStep("verify");
     setCooldown(60);
+    setCaptchaToken(null);
+    setCaptchaRefreshKey((prev) => prev + 1);
     setInfoMsg("\u9a8c\u8bc1\u7801\u5df2\u53d1\u9001\uff0c\u8bf7\u67e5\u6536\u90ae\u7bb1\u3002");
     setLoading(false);
   };
@@ -98,7 +111,7 @@ export default function EmailOtpAuthCard({ mode, nextPath }: EmailOtpAuthCardPro
 
     const { client, error: clientError } = getSupabaseClient();
     if (!client) {
-      setErrorMsg(clientError ?? "Supabase client is unavailable.");
+      setErrorMsg(clientError ?? "系统暂时不可用，请稍后再试。");
       setLoading(false);
       return;
     }
@@ -107,6 +120,9 @@ export default function EmailOtpAuthCard({ mode, nextPath }: EmailOtpAuthCardPro
       email: email.trim(),
       token: code.trim(),
       type: "email",
+      options: {
+        captchaToken: captchaToken ?? undefined,
+      },
     });
 
     if (error) {
@@ -127,6 +143,17 @@ export default function EmailOtpAuthCard({ mode, nextPath }: EmailOtpAuthCardPro
   const onVerifySubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     await verifyCode();
+  };
+
+  const onResend = async () => {
+    if (captchaEnabled) {
+      setStep("request");
+      setCaptchaToken(null);
+      setCaptchaRefreshKey((prev) => prev + 1);
+      setInfoMsg("请重新完成人机验证后，再发送验证码。");
+      return;
+    }
+    await requestCode();
   };
 
   const isSignIn = mode === "sign_in";
@@ -162,6 +189,13 @@ export default function EmailOtpAuthCard({ mode, nextPath }: EmailOtpAuthCardPro
                 required
               />
             </div>
+
+            <TurnstileCaptcha
+              refreshKey={captchaRefreshKey}
+              onTokenChange={(token) => {
+                setCaptchaToken(token);
+              }}
+            />
 
             {errorMsg ? <p className="text-sm text-red-600">{errorMsg}</p> : null}
             {infoMsg ? <p className="text-sm text-emerald-600">{infoMsg}</p> : null}
@@ -220,7 +254,7 @@ export default function EmailOtpAuthCard({ mode, nextPath }: EmailOtpAuthCardPro
 
             <button
               type="button"
-              onClick={requestCode}
+              onClick={onResend}
               disabled={loading || cooldown > 0}
               className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-70"
             >

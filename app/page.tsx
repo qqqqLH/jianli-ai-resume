@@ -8,7 +8,7 @@ export default function HomePage() {
         <div className="space-y-6">
           <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
             <Sparkles className="h-3.5 w-3.5" />
-            AI Resume Assistant
+            {"AI 简历助手"}
           </div>
           <h1 className="text-3xl font-semibold tracking-tight text-slate-900 md:text-4xl">
             {"\u7528\u6a21\u5757\u5316\u6d41\u7a0b\u5feb\u901f\u751f\u6210\u7b80\u5386"}
@@ -41,7 +41,7 @@ export default function HomePage() {
             <li>Next.js 15 (App Router)</li>
             <li>Tailwind CSS</li>
             <li>Supabase</li>
-            <li>Lucide React</li>
+            <li>Lucide React（图标）</li>
           </ul>
         </div>
       </section>

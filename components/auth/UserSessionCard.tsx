@@ -25,7 +25,7 @@ export default function UserSessionCard() {
     const loadUser = async () => {
       const { client, error } = getSupabaseClient();
       if (!client) {
-        if (active) setErrorMsg(error ?? "Supabase client is unavailable.");
+        if (active) setErrorMsg(error ?? "系统暂时不可用，请稍后再试。");
         return;
       }
 
@@ -56,7 +56,7 @@ export default function UserSessionCard() {
 
     const { client, error } = getSupabaseClient();
     if (!client) {
-      setErrorMsg(error ?? "Supabase client is unavailable.");
+      setErrorMsg(error ?? "系统暂时不可用，请稍后再试。");
       setLoading(false);
       return;
     }
