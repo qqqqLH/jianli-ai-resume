@@ -32,6 +32,9 @@ Run the SQL in:
 In Supabase Dashboard:
 
 - `Authentication` -> `Providers` -> `Email`: keep enabled
+- `Authentication` -> `Email Templates` -> `Magic Link`:
+  - Use `{{ .Token }}` in the template body to send a verification code
+  - Do not rely only on `{{ .ConfirmationURL }}` if you want code-only login
 - `Authentication` -> `URL Configuration`:
   - Site URL (local): `http://localhost:3000`
   - Additional Redirect URLs:
@@ -51,10 +54,19 @@ Open:
 - `http://localhost:3000/auth/sign-up`
 - `http://localhost:3000/resume/new` (protected route, requires login)
 
+## 6) Increase hourly email capacity
+
+- Default Supabase email service is only for testing and has very low throughput.
+- For higher volume, configure custom SMTP in:
+  - `Authentication` -> `Settings` -> `SMTP Settings`
+- After custom SMTP is enabled, tune rate limits in:
+  - `Authentication` -> `Rate Limits`
+
 ## Current modules
 
 - `app/auth/sign-in/page.tsx`: email sign-in page
-- `app/auth/sign-up/page.tsx`: email sign-up page (with email confirmation)
+- `app/auth/sign-up/page.tsx`: email sign-up page
+- `components/auth/EmailOtpAuthCard.tsx`: shared email OTP auth card (send + verify)
 - `app/resume/new/page.tsx`: resume create page
 - `components/auth/UserSessionCard.tsx`: current user and sign-out
 - `components/resume/ResumeForm.tsx`: main form and submit logic
