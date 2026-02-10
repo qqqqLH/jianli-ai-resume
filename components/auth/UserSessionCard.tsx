@@ -75,7 +75,7 @@ export default function UserSessionCard() {
 
   return (
     <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-      <p className="text-xs font-medium text-slate-500">Logged in user</p>
+      <p className="text-xs font-medium text-slate-500">{"\u5f53\u524d\u767b\u5f55\u7528\u6237"}</p>
       <p className="mt-1 text-sm font-semibold text-slate-900">{sessionState.userEmail ?? "-"}</p>
       <p className="mt-1 break-all font-mono text-xs text-slate-600">{sessionState.userId ?? "-"}</p>
 
@@ -88,7 +88,7 @@ export default function UserSessionCard() {
         className="mt-3 inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-70"
       >
         <LogOut className="h-3.5 w-3.5" />
-        {loading ? "Signing out..." : "Sign Out"}
+        {loading ? "\u9000\u51fa\u4e2d..." : "\u9000\u51fa\u767b\u5f55"}
       </button>
     </div>
   );

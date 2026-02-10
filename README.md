@@ -33,8 +33,9 @@ In Supabase Dashboard:
 
 - `Authentication` -> `Providers` -> `Email`: keep enabled
 - `Authentication` -> `Email Templates` -> `Magic Link`:
-  - Use `{{ .Token }}` in the template body to send a verification code
-  - Do not rely only on `{{ .ConfirmationURL }}` if you want code-only login
+  - Subject 可直接使用：`supabase/templates/magic_link_otp_subject_zh.txt`
+  - HTML 可直接使用：`supabase/templates/magic_link_otp_zh.html`
+  - 关键是模板里必须包含 `{{ .Token }}`（6位验证码），不要只放 `{{ .ConfirmationURL }}`
 - `Authentication` -> `URL Configuration`:
   - Site URL (local): `http://localhost:3000`
   - Additional Redirect URLs:
@@ -57,6 +58,7 @@ Open:
 ## 6) Increase hourly email capacity
 
 - Default Supabase email service is only for testing and has very low throughput.
+- 默认发件人是 Supabase 官方地址，如果你不想用官方发件，改成自定义 SMTP 即可。
 - For higher volume, configure custom SMTP in:
   - `Authentication` -> `Settings` -> `SMTP Settings`
 - After custom SMTP is enabled, tune rate limits in:

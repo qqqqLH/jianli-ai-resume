@@ -47,7 +47,7 @@ export default function ResumeForm() {
 
     const { client, error: clientError } = getSupabaseClient();
     if (!client) {
-      setErrorMsg(clientError ?? "Supabase client is unavailable.");
+      setErrorMsg(clientError ?? "\u7cfb\u7edf\u6682\u65f6\u4e0d\u53ef\u7528\uff0c\u8bf7\u7a0d\u540e\u518d\u8bd5\u3002");
       setLoading(false);
       return;
     }
@@ -58,7 +58,10 @@ export default function ResumeForm() {
     } = await client.auth.getUser();
 
     if (userError || !user) {
-      setErrorMsg(userError?.message ?? "You must be signed in to save a resume.");
+      setErrorMsg(
+        userError?.message ??
+          "\u9700\u8981\u5148\u767b\u5f55\u624d\u80fd\u4fdd\u5b58\u7b80\u5386\u3002"
+      );
       setLoading(false);
       return;
     }
@@ -75,7 +78,7 @@ export default function ResumeForm() {
     const { error } = await client.from("resumes").insert(payload);
 
     if (error) {
-      setErrorMsg(`Save failed: ${error.message}`);
+      setErrorMsg(`\u4fdd\u5b58\u5931\u8d25\uff1a${error.message}`);
       setLoading(false);
       return;
     }
@@ -94,7 +97,7 @@ export default function ResumeForm() {
         id="fullName"
         label="\u59d3\u540d"
         value={form.fullName}
-        placeholder="e.g. Alex Johnson"
+        placeholder="\u4f8b\u5982\uff1a\u5f20\u4e09"
         disabled={loading}
         onChange={(value) => setForm((prev) => ({ ...prev, fullName: value }))}
       />
@@ -113,7 +116,7 @@ export default function ResumeForm() {
         id="summary"
         label="\u4e2a\u4eba\u603b\u7ed3"
         value={form.summary}
-        placeholder="Briefly describe your strengths and career goals."
+        placeholder="\u7b80\u5355\u4ecb\u7ecd\u4f60\u7684\u4f18\u52bf\u548c\u804c\u4e1a\u76ee\u6807\u3002"
         disabled={loading}
         onChange={(value) => setForm((prev) => ({ ...prev, summary: value }))}
       />
