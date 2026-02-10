@@ -1,4 +1,5 @@
 export type ResumeInsert = {
+  user_id: string;
   full_name: string;
   email: string;
   summary: string;

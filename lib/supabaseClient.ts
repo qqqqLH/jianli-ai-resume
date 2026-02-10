@@ -1,4 +1,7 @@
-import { createClient, SupabaseClient } from "@supabase/supabase-js";
+"use client";
+
+import { createBrowserClient } from "@supabase/ssr";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 type SupabaseClientResult = {
   client: SupabaseClient | null;
@@ -21,7 +24,7 @@ export function getSupabaseClient(): SupabaseClientResult {
   }
 
   if (!cachedClient) {
-    cachedClient = createClient(supabaseUrl, supabasePublishableKey);
+    cachedClient = createBrowserClient(supabaseUrl, supabasePublishableKey);
   }
 
   return { client: cachedClient, error: null };

@@ -17,13 +17,21 @@ export default function HomePage() {
             Built with Next.js 15, Tailwind CSS, Supabase, and Lucide React. Start with basic
             profile fields, then expand to experience and education modules.
           </p>
-          <Link
-            href="/resume/new"
-            className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800"
-          >
-            <FileText className="h-4 w-4" />
-            Open Resume Form
-          </Link>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              href="/auth/sign-in"
+              className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800"
+            >
+              <FileText className="h-4 w-4" />
+              Sign In
+            </Link>
+            <Link
+              href="/auth/sign-up"
+              className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-800 transition hover:bg-slate-100"
+            >
+              Create Account
+            </Link>
+          </div>
         </div>
 
         <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">

@@ -1,4 +1,5 @@
 import ResumeForm from "@/components/resume/ResumeForm";
+import UserSessionCard from "@/components/auth/UserSessionCard";
 
 export default function NewResumePage() {
   return (
@@ -15,6 +16,7 @@ export default function NewResumePage() {
           </p>
         </header>
 
+        <UserSessionCard />
         <ResumeForm />
       </section>
     </main>

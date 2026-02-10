@@ -45,20 +45,32 @@ export default function ResumeForm() {
     setErrorMsg(null);
     setSuccessMsg(null);
 
-    const payload: ResumeInsert = {
-      full_name: form.fullName.trim(),
-      email: form.email.trim(),
-      summary: form.summary.trim(),
-      experience: [],
-      education: [],
-    };
-
     const { client, error: clientError } = getSupabaseClient();
     if (!client) {
       setErrorMsg(clientError ?? "Supabase client is unavailable.");
       setLoading(false);
       return;
     }
+
+    const {
+      data: { user },
+      error: userError,
+    } = await client.auth.getUser();
+
+    if (userError || !user) {
+      setErrorMsg(userError?.message ?? "You must be signed in to save a resume.");
+      setLoading(false);
+      return;
+    }
+
+    const payload: ResumeInsert = {
+      user_id: user.id,
+      full_name: form.fullName.trim(),
+      email: form.email.trim(),
+      summary: form.summary.trim(),
+      experience: [],
+      education: [],
+    };
 
     const { error } = await client.from("resumes").insert(payload);
 

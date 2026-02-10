@@ -18,13 +18,33 @@ create index if not exists resumes_created_at_idx on public.resumes (created_at 
 alter table public.resumes enable row level security;
 
 drop policy if exists "debug_select_resumes" on public.resumes;
-create policy "debug_select_resumes"
+drop policy if exists "debug_insert_resumes" on public.resumes;
+drop policy if exists "resumes_select_own" on public.resumes;
+drop policy if exists "resumes_insert_own" on public.resumes;
+drop policy if exists "resumes_update_own" on public.resumes;
+drop policy if exists "resumes_delete_own" on public.resumes;
+
+create policy "resumes_select_own"
   on public.resumes
   for select
-  using (true);
+  to authenticated
+  using (auth.uid() = user_id);
 
-drop policy if exists "debug_insert_resumes" on public.resumes;
-create policy "debug_insert_resumes"
+create policy "resumes_insert_own"
   on public.resumes
   for insert
-  with check (true);
+  to authenticated
+  with check (auth.uid() = user_id);
+
+create policy "resumes_update_own"
+  on public.resumes
+  for update
+  to authenticated
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+create policy "resumes_delete_own"
+  on public.resumes
+  for delete
+  to authenticated
+  using (auth.uid() = user_id);
